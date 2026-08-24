@@ -15,7 +15,7 @@ class GroqAdapter(AIProviderAdapter):
             api_key=settings.groq_api_key,
             base_url=settings.groq_base_url,
         )
-        self.model = settings.groq_model or "llama3-8b-8192"
+        self.model = settings.groq_model or "openai/gpt-oss-120b"
 
     async def generate_response(
         self,

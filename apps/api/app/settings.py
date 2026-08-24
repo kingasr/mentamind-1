@@ -93,7 +93,7 @@ class Settings(BaseSettings):
     saml_idp_x509_cert: str = ""
 
     groq_api_key: str | None = None
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
     groq_base_url: str = "https://api.groq.com/openai/v1"
 
     # Media storage backend: "local" (filesystem) or "r2" (Cloudflare R2).

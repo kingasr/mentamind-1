@@ -69,6 +69,10 @@ services:
       # Optional integration — leave unset to disable, or paste key.
       - key: GROQ_API_KEY
         sync: false
+      # Groq retired llama-3.3-70b-versatile (caused silent fallback replies);
+      # pin an available model explicitly.
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
 
   # ---- Redis (Render Key Value) ----
   - type: keyvalue

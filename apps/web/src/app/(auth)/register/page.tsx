@@ -22,11 +22,11 @@ interface FormErrors {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const REGIONS: { value: DataResidencyRegion; label: string }[] = [
-  { value: "in", label: "India (IN)" },
-  { value: "eu", label: "European Union (EU)" },
-  { value: "us", label: "United States (US)" },
-  { value: "uae", label: "UAE" },
+const REGIONS: { value: DataResidencyRegion; label: string; short: string }[] = [
+  { value: "in", label: "India (IN)", short: "India" },
+  { value: "eu", label: "European Union (EU)", short: "EU" },
+  { value: "us", label: "United States (US)", short: "US" },
+  { value: "uae", label: "UAE", short: "UAE" },
 ];
 
 export default function RegisterPage() {
@@ -98,67 +98,53 @@ export default function RegisterPage() {
 
   return (
     <>
-      <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">
+      <h1 className="text-[26px] font-medium leading-tight tracking-tight text-white">
         Create your workspace
       </h1>
-      <p className="mt-2 mb-7 text-[14px] leading-relaxed text-white/55">
-        Set up your organization and become its admin. You can invite colleagues after signing up.
+      <p className="mt-1.5 mb-5 text-[13px] leading-relaxed text-white/55">
+        You become the admin and can invite colleagues after signing up.
       </p>
 
-      <form onSubmit={handleSubmit} noValidate aria-label="Create workspace form">
+      <form onSubmit={handleSubmit} noValidate aria-label="Create workspace form" className="space-y-3.5">
         {errors.form && (
           <div
             role="alert"
-            className="mb-4 rounded-md border border-destructive bg-destructive-subtle px-3 py-2 text-sm text-destructive"
+            className="rounded-md border border-destructive bg-destructive-subtle px-3 py-2 text-sm text-destructive"
           >
             {errors.form}
           </div>
         )}
 
-        <FormField
-          id="org_name"
-          label="Organization name"
-          error={errors.org_name}
-          required
-        >
-          <Input
-            ref={firstErrorRef}
-            name="org_name"
-            type="text"
-            autoComplete="organization"
-            disabled={isLoading}
-            placeholder="Acme Inc."
-          />
-        </FormField>
+        <div className="grid grid-cols-[1fr_auto] gap-3">
+          <FormField id="org_name" label="Organization" error={errors.org_name} required>
+            <Input
+              ref={firstErrorRef}
+              name="org_name"
+              type="text"
+              autoComplete="organization"
+              disabled={isLoading}
+              placeholder="Acme Inc."
+            />
+          </FormField>
 
-        <FormField
-          id="data_residency_region"
-          label="Data region"
-          required
-          className="mt-4"
-        >
-          <select
-            id="data_residency_region"
-            name="data_residency_region"
-            defaultValue="in"
-            disabled={isLoading}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
-          >
-            {REGIONS.map((r) => (
-              <option key={r.value} value={r.value}>
-                {r.label}
-              </option>
-            ))}
-          </select>
-        </FormField>
+          <FormField id="data_residency_region" label="Region" required>
+            <select
+              id="data_residency_region"
+              name="data_residency_region"
+              defaultValue="in"
+              disabled={isLoading}
+              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50"
+            >
+              {REGIONS.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.short}
+                </option>
+              ))}
+            </select>
+          </FormField>
+        </div>
 
-        <FormField
-          id="display_name"
-          label="Your name"
-          error={errors.display_name}
-          required
-          className="mt-4"
-        >
+        <FormField id="display_name" label="Your name" error={errors.display_name} required>
           <Input
             name="display_name"
             type="text"
@@ -168,13 +154,7 @@ export default function RegisterPage() {
           />
         </FormField>
 
-        <FormField
-          id="email"
-          label="Work email"
-          error={errors.email}
-          required
-          className="mt-4"
-        >
+        <FormField id="email" label="Work email" error={errors.email} required>
           <Input
             name="email"
             type="email"
@@ -185,37 +165,27 @@ export default function RegisterPage() {
           />
         </FormField>
 
-        <FormField
-          id="password"
-          label="Password"
-          error={errors.password}
-          required
-          className="mt-4"
-        >
-          <PasswordInput
-            name="password"
-            autoComplete="new-password"
-            disabled={isLoading}
-          />
-        </FormField>
+        <div className="grid grid-cols-2 gap-3">
+          <FormField id="password" label="Password" error={errors.password} required>
+            <PasswordInput
+              name="password"
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+          </FormField>
 
-        <FormField
-          id="confirm_password"
-          label="Confirm password"
-          error={errors.confirm_password}
-          required
-          className="mt-4"
-        >
-          <PasswordInput
-            name="confirm_password"
-            autoComplete="new-password"
-            disabled={isLoading}
-          />
-        </FormField>
+          <FormField id="confirm_password" label="Confirm" error={errors.confirm_password} required>
+            <PasswordInput
+              name="confirm_password"
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+          </FormField>
+        </div>
 
         <Button
           type="submit"
-          className="mt-7 h-12 w-full rounded-full text-[15px]"
+          className="!mt-5 h-11 w-full rounded-full text-[15px]"
           isLoading={isLoading}
           disabled={isLoading}
         >
@@ -231,10 +201,8 @@ export default function RegisterPage() {
         >
           Sign in
         </Link>
-      </p>
-      <p className="mt-2 text-center text-[13px] text-white/50">
-        Joining via an invite?{" "}
-        <span className="text-text-secondary">Check your email for a link.</span>
+        <span className="text-white/30"> · </span>
+        Invited? Use the link in your email.
       </p>
     </>
   );

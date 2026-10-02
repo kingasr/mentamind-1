@@ -248,7 +248,7 @@
 /* Auth pages: rounder, taller fields to match the landing page */
 .mm-auth input:not([type="checkbox"]):not([type="radio"]),
 .mm-auth select {
-  height: 2.75rem;
+  height: 2.5rem;
   border-radius: 0.75rem;
   padding-left: 0.875rem;
   padding-right: 0.875rem;
@@ -257,6 +257,7 @@
 .mm-auth label {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
 }
 .mm-auth button[type="submit"] {
   border-radius: 9999px;

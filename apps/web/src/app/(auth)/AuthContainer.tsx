@@ -26,7 +26,7 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="mm-auth dark min-h-screen bg-[#06080c] p-3 font-geist text-[#f2f5fa] antialiased sm:p-5">
-      <div className="grid min-h-[calc(100vh-24px)] gap-3 sm:min-h-[calc(100vh-40px)] sm:gap-5 lg:grid-cols-2">
+      <div className="grid gap-3 sm:gap-5 lg:min-h-[calc(100vh-40px)] lg:grid-cols-2">
         {/* Form column */}
         <div className="flex flex-col">
           <div className="flex h-14 items-center justify-between rounded-full border border-white/10 bg-[#0a0d13]/80 pl-5 pr-2">
@@ -42,7 +42,7 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center justify-center py-10">
+          <div className="flex flex-1 items-center justify-center py-3">
             <div className="w-full max-w-[420px]">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -51,7 +51,7 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.22, ease: "easeOut" }}
-                  className="rounded-[24px] border border-white/10 bg-white/[0.03] p-7 sm:p-8"
+                  className="rounded-[24px] border border-white/10 bg-white/[0.03] p-6 sm:p-7"
                 >
                   {children}
                 </motion.div>

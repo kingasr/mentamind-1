@@ -71,10 +71,10 @@ export default function LoginPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold text-text-primary">
+      <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">
         Welcome back
       </h1>
-      <p className="mt-1 text-sm text-text-secondary mb-6">
+      <p className="mt-2 mb-7 text-[14px] leading-relaxed text-white/55">
         Sign in to your account
       </p>
 
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
         <Button
           type="submit"
-          className="w-full mt-6"
+          className="mt-7 h-12 w-full rounded-full text-[15px]"
           isLoading={isLoading}
           disabled={isLoading}
         >
@@ -125,11 +125,19 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-text-secondary">
+      <p className="mt-4 text-center text-[13px] text-white/50">
+        <Link
+          href="/forgot-password"
+          className="text-white/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm"
+        >
+          Forgot your password?
+        </Link>
+      </p>
+      <p className="mt-2 text-center text-[13px] text-white/50">
         No account?{" "}
         <Link
           href="/register"
-          className="text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm"
+          className="text-[#19b2d2] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm"
         >
           Create one
         </Link>

@@ -88,7 +88,7 @@ function ResetPasswordContent() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-semibold text-text-primary">Password updated!</h1>
+          <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">Password updated!</h1>
         </div>
         <p className="text-sm text-text-secondary text-center mb-6">
           Your password has been changed successfully. You can now sign in with your new password.
@@ -105,8 +105,8 @@ function ResetPasswordContent() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold text-text-primary">Set new password</h1>
-      <p className="mt-1 text-sm text-text-secondary mb-6">
+      <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">Set new password</h1>
+      <p className="mt-2 mb-7 text-[14px] leading-relaxed text-white/55">
         Choose a strong password for your account.
       </p>
 
@@ -131,13 +131,13 @@ function ResetPasswordContent() {
             disabled={isLoading || !token}
           />
         </FormField>
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading} disabled={isLoading || !token}>
+        <Button type="submit" className="mt-7 h-12 w-full rounded-full text-[15px]" isLoading={isLoading} disabled={isLoading || !token}>
           Update password
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-text-secondary">
-        <Link href="/forgot-password" className="text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
+      <p className="mt-4 text-center text-[13px] text-white/50">
+        <Link href="/forgot-password" className="text-[#19b2d2] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
           Request a new link
         </Link>
       </p>

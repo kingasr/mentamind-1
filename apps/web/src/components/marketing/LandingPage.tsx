@@ -3,627 +3,496 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Sparkles,
-  Search,
-  Menu,
-  X,
-  ChevronRight,
-  Home,
-  Star,
-  MessageCircle,
-  FileText,
-  Users,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { CheckinCard, CoachCard, ForumCard, MeditationCard, SignalCard, SIGNAL_ROWS } from "@/components/marketing/ProductCards";
 
-const BACKGROUND_VIDEO_URL =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4";
+/* ------------------------------------------------------------------ */
+/*  Content                                                            */
+/* ------------------------------------------------------------------ */
 
-const gradientStyle: React.CSSProperties = {
-  backgroundImage:
-    "linear-gradient(to right, #091020 0%, #0B2551 12.5%, #A4F4FD 32.5%, #00d2ff 50%, #0B2551 67.5%, #091020 87.5%, #091020 100%)",
-  backgroundSize: "200% auto",
-  WebkitBackgroundClip: "text",
-  backgroundClip: "text",
-  color: "transparent",
-  WebkitTextFillColor: "transparent",
-  filter: "url(#c3-noise)",
-};
+const NAV_LINKS = [
+  { label: "What's inside", href: "#features" },
+  { label: "How it works", href: "#how-it-works" },
+  { label: "For HR", href: "#for-hr" },
+];
 
-function LogoMark({ className = "w-8 h-8" }: { className?: string }) {
+const SECTORS = [
+  "Technology",
+  "Healthcare",
+  "Manufacturing",
+  "Banking",
+  "Government",
+  "Education",
+  "PSUs",
+  "Startups",
+];
+
+const FACTS = [
+  { label: "Daily check-in", value: "2 min", note: "Mood, energy and stress. Done before the first meeting." },
+  { label: "Guided meditation", value: "30 days", note: "A structured journey, then a library to keep going." },
+  { label: "Entries visible to managers", value: "0", note: "HR sees team-level signals. Never a person.", accent: true },
+  { label: "AI companion", value: "24×7", note: "Private, always there, never shared with anyone." },
+];
+
+const MODULES = [
+  {
+    category: "Check-in",
+    title: "A daily pulse that takes two minutes",
+    body: "Mood, energy and stress, logged in a few taps. Patterns surface over weeks, not in a once-a-year survey.",
+    tags: ["Mood", "Energy", "Stress", "Streaks"],
+  },
+  {
+    category: "AI companion",
+    title: "Someone to talk to at 11pm",
+    body: "A private coach that listens, reflects and suggests small next steps. Conversations stay with the employee.",
+    tags: ["Private chat", "Reflections", "Next steps"],
+  },
+  {
+    category: "Meditation",
+    title: "A 30-day journey, then a library",
+    body: "Foundation, depth and integration blocks with a session, a reflection and a task each day. Plus programs for sleep, focus and anxiety.",
+    tags: ["30-day journey", "Library", "Programs"],
+  },
+  {
+    category: "Journal",
+    title: "Write it down, let it go",
+    body: "A quiet space for what is hard to say out loud. Prompts when words do not come easily.",
+    tags: ["Prompts", "Private", "Searchable"],
+  },
+  {
+    category: "Community",
+    title: "An anonymous forum for the hard weeks",
+    body: "Ask the question you would not ask in standup. Moderated, anonymous, and inside your organisation only.",
+    tags: ["Anonymous", "Moderated", "Org-only"],
+  },
+  {
+    category: "Assessments",
+    title: "Validated screenings, not quizzes",
+    body: "Standard wellbeing and burnout screenings employees can take on their own terms, with results that stay theirs.",
+    tags: ["Burnout", "Wellbeing", "Self-paced"],
+  },
+];
+
+const STEPS = [
+  { title: "Invite your organisation", body: "HR sends invites. Employees join with their work email in under a minute. No app store, no procurement cycle." },
+  { title: "Employees check in daily", body: "Two minutes each morning. The companion, journal and meditation are there when the day gets heavy." },
+  { title: "Patterns form over weeks", body: "Mentamind reads the trend across each team and flags where stress is climbing before it turns into leave or attrition." },
+  { title: "HR acts on the signal", body: "A weekly digest and a dashboard show which teams need attention and what has helped elsewhere." },
+];
+
+const HR_POINTS = [
+  "Team-level trends only. A team needs enough members before anything is shown.",
+  "No manager can open an employee's check-ins, chats or journal. Ever.",
+  "Weekly digest with the teams to watch and what changed since last week.",
+  "Invite, roles and seats managed from one admin screen.",
+];
+
+/* ------------------------------------------------------------------ */
+/*  Small pieces                                                       */
+/* ------------------------------------------------------------------ */
+
+function Logo({ size = 28 }: { size?: number }) {
   return (
-    <Image
-      src="/logo/mentamind.webp"
-      alt="Mentamind"
-      width={32}
-      height={32}
-      className={`${className} object-contain`}
-    />
-  );
-}
-
-function PrimaryButton({ label = "Get started" }: { label?: string }) {
-  return (
-    <Link
-      href="/register"
-      className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-3 transition-all hover:bg-white/90 active:scale-[0.98]"
-    >
-      <LogoMark className="w-4 h-4" />
-      {label}
-      <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-[1px]" />
+    <Link href="/" className="flex items-center gap-2.5" aria-label="Mentamind home">
+      <Image src="/logo/mentamind.webp" alt="" width={size} height={size} className="object-contain" />
+      <span className="font-geist text-[17px] font-medium tracking-tight text-white">mentamind</span>
     </Link>
   );
 }
 
-function SectionEyebrow({ label, tag }: { label: string; tag?: string }) {
+function Eyebrow({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="w-1.5 h-1.5 rounded-full bg-white" />
-      <span className="text-xs font-medium uppercase tracking-widest text-white/70">
-        {label}
+    <span
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] ${
+        light ? "border-white/30 bg-white/15 text-white" : "border-white/10 bg-white/[0.04] text-white/60"
+      }`}
+    >
+      <span className={`h-1 w-1 rounded-full ${light ? "bg-white" : "bg-[#19b2d2]"}`} />
+      {children}
+    </span>
+  );
+}
+
+function PrimaryButton({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="group inline-flex h-12 items-center gap-3 rounded-full bg-white pl-6 pr-1.5 text-[15px] font-medium text-[#0a0c10] transition-transform hover:scale-[1.02] active:scale-[0.98]"
+    >
+      {children}
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0a0c10] text-white">
+        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />
       </span>
-      {tag && (
-        <span className="px-2 py-0.5 rounded-full border border-white/10 text-white/50 text-[10px] uppercase tracking-wide">
-          {tag}
-        </span>
-      )}
+    </Link>
+  );
+}
+
+function GhostButton({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-12 items-center rounded-full border border-white/30 bg-white/10 px-6 text-[15px] font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function Headline({
+  as: Tag = "h2",
+  line1,
+  line2,
+  className = "",
+}: {
+  as?: "h1" | "h2";
+  line1: string;
+  line2: string;
+  className?: string;
+}) {
+  return (
+    <Tag className={`font-geist font-normal tracking-[-0.03em] leading-[1.02] ${className}`}>
+      {line1}
+      <br />
+      <em className="font-serif not-italic italic text-[1.08em] tracking-[-0.005em]">{line2}</em>
+    </Tag>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Hero cards                                                         */
+/* ------------------------------------------------------------------ */
+
+function HeroCards() {
+  const cards = [<CheckinCard key="checkin" />, <MeditationCard key="meditation" />, <CoachCard key="coach" />, <SignalCard key="signal" />, <ForumCard key="forum" />];
+
+  const tilt = [-5, -2.5, 0, 2.5, 5];
+
+  return (
+    <div className="mt-16 flex gap-4 overflow-x-auto px-6 pb-6 [scrollbar-width:none] sm:mt-20 sm:justify-center sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className="mm-rise sm:[transform:rotate(var(--tilt))_translateY(var(--lift))]"
+          style={
+            {
+              animationDelay: `${0.55 + i * 0.07}s`,
+              "--tilt": `${tilt[i]}deg`,
+              "--lift": i === 2 ? "-14px" : Math.abs(tilt[i]) > 3 ? "14px" : "0px",
+            } as React.CSSProperties
+          }
+        >
+          {card}
+        </div>
+      ))}
     </div>
   );
 }
 
-const NAV_LINKS = ["Features", "How it works"];
+/* ------------------------------------------------------------------ */
+/*  Sections                                                           */
+/* ------------------------------------------------------------------ */
 
-type TabKey = "home" | "checkin" | "coach" | "journal" | "forum" | "insights";
-
-const TABS: { key: TabKey; label: string; icon: typeof Home; count?: number }[] = [
-  { key: "home", label: "Home", icon: Home },
-  { key: "checkin", label: "Check-in", icon: Star, count: 4 },
-  { key: "coach", label: "Coach", icon: MessageCircle },
-  { key: "journal", label: "Journal", icon: FileText, count: 2 },
-  { key: "forum", label: "Forum", icon: Users },
-  { key: "insights", label: "Insights", icon: ShieldCheck },
-];
-
-const TAB_CONTENT: Record<
-  TabKey,
-  {
-    list: { title: string; time: string; unread?: boolean }[];
-    readerTitle: string;
-    readerBody: React.ReactNode;
-  }
-> = {
-  home: {
-    list: [
-      { title: "Today's check-in", time: "8:41 AM", unread: true },
-      { title: "Coach reflection", time: "8:12 AM" },
-      { title: "Weekly signal", time: "Yesterday" },
-    ],
-    readerTitle: "Welcome back",
-    readerBody: (
-      <>
-        <p>3 day check-in streak.</p>
-        <p>Mood trending steady this week.</p>
-      </>
-    ),
-  },
-  checkin: {
-    list: [
-      { title: "Mood check-in", time: "8:41 AM", unread: true },
-      { title: "Mood check-in", time: "Yesterday" },
-      { title: "Mood check-in", time: "Mon" },
-      { title: "Mood check-in", time: "Sun" },
-    ],
-    readerTitle: "Mood check-in",
-    readerBody: (
-      <>
-        <div className="liquid-glass rounded-lg p-3 flex items-start gap-2">
-          <Sparkles className="w-3.5 h-3.5 mt-0.5" style={{ color: "#A4F4FD" }} />
-          <p className="text-white/60">Energy 7/10, stress 4/10. Steady week.</p>
-        </div>
-        <p>Want to talk it through, or try a short breathing exercise?</p>
-      </>
-    ),
-  },
-  coach: {
-    list: [
-      { title: "Naming what is hard", time: "8:12 AM", unread: true },
-      { title: "Deadline pressure", time: "Mon" },
-      { title: "Sleep routine", time: "Fri" },
-    ],
-    readerTitle: "AI Coach",
-    readerBody: (
-      <>
-        <div className="rounded-2xl rounded-br-sm bg-white/10 px-3 py-2 ml-auto max-w-[80%] text-right">
-          The deadline is stressing me out.
-        </div>
-        <div className="rounded-2xl rounded-bl-sm bg-white/5 px-3 py-2 max-w-[80%]">
-          That&apos;s real. What would make tomorrow feel lighter?
-        </div>
-      </>
-    ),
-  },
-  journal: {
-    list: [
-      { title: "Untitled entry", time: "Today", unread: true },
-      { title: "Untitled entry", time: "Sat" },
-    ],
-    readerTitle: "Private journal",
-    readerBody: (
-      <>
-        <span className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-white/50">
-          Only visible to you
-        </span>
-        <p className="mt-3">A quiet space to write, separate from check-ins.</p>
-      </>
-    ),
-  },
-  forum: {
-    list: [
-      { title: "Anyone else finding this week rough?", time: "2h", unread: true },
-      { title: "How do you unplug on weekends?", time: "1d" },
-    ],
-    readerTitle: "Community forum",
-    readerBody: (
-      <>
-        <div className="rounded-2xl rounded-bl-sm bg-white/5 px-3 py-2 max-w-[85%]">
-          <span className="text-[10px] text-white/40 block mb-1">Anonymous</span>
-          Anyone else finding this week rough?
-        </div>
-        <div className="rounded-2xl rounded-bl-sm bg-white/5 px-3 py-2 max-w-[85%]">
-          <span className="text-[10px] text-white/40 block mb-1">You</span>
-          Same. The check-in helped me name it.
-        </div>
-      </>
-    ),
-  },
-  insights: {
-    list: [
-      { title: "Team 1", time: "Low" },
-      { title: "Team 2", time: "Watch" },
-      { title: "Team 3", time: "Low" },
-    ],
-    readerTitle: "Org signal",
-    readerBody: (
-      <>
-        <p>Individual entries stay private, always.</p>
-        <div className="mt-3 space-y-2">
-          {[
-            { label: "Response rate", value: 82 },
-            { label: "Coach engagement", value: 54 },
-          ].map((bar) => (
-            <div key={bar.label}>
-              <div className="flex justify-between text-[11px] text-white/40 mb-1">
-                <span>{bar.label}</span>
-                <span>{bar.value}%</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-white/5">
-                <div
-                  className="h-1.5 rounded-full bg-white/50"
-                  style={{ width: `${bar.value}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </>
-    ),
-  },
-};
-
-const SIGNAL_ROWS = [
-  { team: "Team 1", status: "Low", tone: "#10b981" },
-  { team: "Team 2", status: "Watch", tone: "#f59e0b" },
-  { team: "Team 3", status: "Low", tone: "#10b981" },
-];
-
-const TRUST_POINTS = [
-  "AES-256 encryption",
-  "SSO / SAML",
-  "Private by default",
-  "Built with clinicians",
-];
-
-const TESTIMONIALS = [
-  {
-    quote: "A real signal, not a once-a-year survey nobody remembers filling out.",
-    name: "People Ops Lead",
-    role: "Technology company",
-  },
-  {
-    quote: "The AI coach is the part employees actually use.",
-    name: "Head of HR",
-    role: "Healthcare org",
-  },
-  {
-    quote: "We see risk trending in a team before it shows up as attrition.",
-    name: "VP of People",
-    role: "Remote team",
-  },
-];
-
-function ProductMockup() {
-  const [active, setActive] = useState<TabKey>("checkin");
-  const content = TAB_CONTENT[active];
-
+function Nav() {
+  const [open, setOpen] = useState(false);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0e1014]/90 backdrop-blur-2xl"
-    >
-      <div className="h-10 flex items-center justify-center relative border-b border-white/10 bg-black/30">
-        <div className="absolute left-4 flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-          <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
-          <span className="w-3 h-3 rounded-full bg-[#28c840]" />
-        </div>
-        <span className="text-xs text-white/50">Mentamind</span>
-      </div>
-
-      <div className="grid grid-cols-12 h-[460px]">
-        <div className="col-span-12 sm:col-span-3 border-r border-white/10 bg-black/30 p-4 hidden sm:flex sm:flex-col">
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-5">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full border border-white/10 bg-[#0a0d13]/80 pl-5 pr-2 backdrop-blur-xl">
+        <Logo />
+        <nav className="hidden items-center gap-7 md:flex">
+          {NAV_LINKS.map((l) => (
+            <a key={l.href} href={l.href} className="text-[14px] text-white/65 transition-colors hover:text-white">
+              {l.label}
+            </a>
+          ))}
+          <Link href="/login" className="text-[14px] text-white/65 transition-colors hover:text-white">
+            Log in
+          </Link>
+        </nav>
+        <div className="flex items-center gap-2">
           <Link
             href="/register"
-            className="w-full rounded-lg bg-white text-black text-xs font-semibold px-3 py-2 flex items-center justify-center gap-2 mb-4"
+            className="hidden h-10 items-center rounded-full bg-white px-5 text-[14px] font-medium text-[#0a0c10] transition-colors hover:bg-white/90 sm:inline-flex"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Start check-in
+            Get started
           </Link>
-          <nav className="flex flex-col gap-1 text-xs">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActive(tab.key)}
-                className={`flex items-center justify-between rounded-md px-2 py-1.5 text-left ${active === tab.key
-                    ? "bg-white/10 text-white"
-                    : "text-white/60 hover:bg-white/5"
-                  }`}
-              >
-                <span className="flex items-center gap-2">
-                  <tab.icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </span>
-                {tab.count && <span className="text-white/40">{tab.count}</span>}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="col-span-12 sm:col-span-4 border-r border-white/10 hidden md:flex md:flex-col">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 text-white/40 text-xs">
-            <Search className="w-3.5 h-3.5" />
-            Search
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {content.list.map((item, i) => (
-              <div
-                key={item.title + i}
-                className={`px-4 py-3 border-b border-white/5 ${i === 0 ? "bg-white/[0.04]" : ""
-                  }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`text-xs ${item.unread ? "text-white font-medium" : "text-white/60"
-                      }`}
-                  >
-                    {item.title}
-                  </span>
-                  <span className="text-[10px] text-white/30">{item.time}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="col-span-12 sm:col-span-5 p-4">
-          <h4 className="text-sm font-semibold text-white">{content.readerTitle}</h4>
-          <div className="mt-3 space-y-3 text-xs text-white/60 leading-relaxed">
-            {content.readerBody}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function SignalSection() {
-  return (
-    <section id="how-it-works" className="max-w-6xl mx-auto px-6 py-20 md:py-28">
-      <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7 }}
-        >
-          <SectionEyebrow label="Signal" tag="AI-native" />
-          <h2 className="mt-5 text-3xl md:text-5xl font-semibold tracking-tight leading-[1.02]">
-            See burnout coming.
-          </h2>
-          <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">
-            Daily check-ins, read across your org, surfaced early. No
-            individual entry ever reaches a manager.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {["Risk scoring", "Weekly digests", "Private by default", "Admin dashboard"].map(
-              (chip) => (
-                <span
-                  key={chip}
-                  className="text-xs text-white/70 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]"
-                >
-                  {chip}
-                </span>
-              ),
-            )}
-          </div>
-        </motion.div>
-
-        <div className="liquid-glass rounded-2xl p-5">
-          <div className="text-xs text-white/40 mb-4">This week</div>
-          <div className="grid grid-cols-3 gap-2">
-            {SIGNAL_ROWS.map((row) => (
-              <div key={row.team} className="liquid-glass rounded-lg p-3 text-center">
-                <div className="text-lg font-semibold" style={{ color: row.tone }}>
-                  {row.status}
-                </div>
-                <div className="text-xs text-white/40 mt-1">{row.team}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TrustStrip() {
-  return (
-    <section id="for-teams" className="max-w-6xl mx-auto px-6 py-16 md:py-20">
-      <div className="text-center text-xs uppercase tracking-widest text-white/40">
-        Built for security-conscious teams
-      </div>
-      <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6">
-        {TRUST_POINTS.map((point, i) => (
-          <motion.div
-            key={point}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            className="text-sm font-medium tracking-tight text-white/50 text-center"
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white md:hidden"
           >
-            {point}
-          </motion.div>
-        ))}
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
-    </section>
-  );
-}
-
-function Testimonials() {
-  return (
-    <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
-      <div className="grid md:grid-cols-3 gap-6">
-        {TESTIMONIALS.map((t) => (
-          <figure key={t.name} className="liquid-glass rounded-2xl p-6">
-            <blockquote className="text-sm text-white/80 leading-[1.6]">
-              &ldquo;{t.quote}&rdquo;
-            </blockquote>
-            <figcaption className="mt-6 pt-5 border-t border-white/10">
-              <div className="text-sm font-semibold">{t.name}</div>
-              <div className="text-xs text-white/50 mt-0.5">{t.role}</div>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function LandingPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <div className="dark relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white">
-      <svg width="0" height="0" style={{ position: "absolute" }}>
-        <defs>
-          <filter id="c3-noise">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency={0.9}
-              numOctaves={2}
-              stitchTiles="stitch"
-            />
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0"
-            />
-            <feComposite in2="SourceGraphic" operator="in" result="noise" />
-            <feBlend in="SourceGraphic" in2="noise" mode="multiply" />
-          </filter>
-        </defs>
-      </svg>
-
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover pointer-events-none opacity-60"
-          src={BACKGROUND_VIDEO_URL}
-        />
-        <div className="absolute inset-0 bg-[#0c0c0c]/50" />
-      </div>
-
-      <div className="relative z-10">
-        <motion.nav
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between"
-        >
-          <Link href="/" className="flex items-center">
-            <LogoMark />
-          </Link>
-          <div className="hidden md:flex gap-8">
-            {NAV_LINKS.map((link, i) => (
-              <motion.a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                className="text-white/70 text-sm font-medium hover:text-white"
-              >
-                {link}
-              </motion.a>
+      {open && (
+        <div className="mx-auto mt-2 max-w-6xl rounded-3xl border border-white/10 bg-[#0a0d13]/95 p-4 backdrop-blur-xl md:hidden">
+          <nav className="flex flex-col">
+            {NAV_LINKS.map((l) => (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-[15px] text-white/80 hover:bg-white/5">
+                {l.label}
+              </a>
             ))}
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Link href="/login" className="text-white/70 text-sm font-medium hover:text-white">
+            <Link href="/login" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-[15px] text-white/80 hover:bg-white/5">
               Log in
             </Link>
-            <PrimaryButton />
-          </div>
-          <button
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            className="md:hidden w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center"
-          >
-            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
-        </motion.nav>
+            <Link href="/register" className="mt-2 inline-flex h-11 items-center justify-center rounded-full bg-white text-[15px] font-medium text-[#0a0c10]">
+              Get started
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
 
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-b border-white/10"
-            >
-              <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
-                {NAV_LINKS.map((link) => (
-                  <a
-                    key={link}
-                    href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="text-white/70 text-sm font-medium hover:text-white"
-                  >
-                    {link}
-                  </a>
-                ))}
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="text-white/70 text-sm font-medium hover:text-white"
-                >
-                  Log in
-                </Link>
-                <PrimaryButton />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <section className="pt-16 md:pt-28 pb-20 text-center flex flex-col items-center px-6">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl md:text-7xl font-semibold tracking-tight leading-[0.9]"
-          >
-            Support your team.
-            <br />
-            <span className="animate-shiny" style={gradientStyle}>
-              Before burnout.
-            </span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 text-white/60 max-w-md text-base leading-[1.5]"
-          >
-            Daily check-ins, an AI coach, and real support. Plus the org-wide
-            signal to act early.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-8 flex flex-col items-center gap-3"
-          >
-            <PrimaryButton label="Get started free" />
-          </motion.div>
-        </section>
-
-        <section id="features" className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <ProductMockup />
-        </section>
-
-        <SignalSection />
-        <TrustStrip />
-        <Testimonials />
-
-        <section className="max-w-6xl mx-auto px-6 py-20 md:py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7 }}
-            className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center"
-          >
-            <div
-              className="absolute inset-0 opacity-30 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(600px circle at 50% 0%, rgba(255,255,255,0.15), transparent 70%)",
-              }}
-            />
-            <div className="relative">
-              <h2 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.02]">
-                Support your people.
-              </h2>
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <PrimaryButton label="Get started free" />
-                <a
-                  href="mailto:noreply.mentamind@gmail.com"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 text-white text-sm font-medium px-5 py-3 hover:bg-white/5"
-                >
-                  Talk to us
-                  <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
+function Hero() {
+  return (
+    <section className="px-3 pt-[84px] sm:px-5 sm:pt-[96px]">
+      <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px]">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,#03202f_0%,#075a78_26%,#0f98b8_48%,#67cde3_70%,#b6e9f3_86%,#e3f7fb_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(120%_70%_at_50%_-12%,rgba(255,255,255,0.38)_0%,rgba(255,255,255,0)_62%)]" />
+        <div className="relative pt-20 sm:pt-28">
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <div className="mm-rise" style={{ animationDelay: "0.05s" }}>
+              <Eyebrow light>Wellbeing for every employee</Eyebrow>
             </div>
-          </motion.div>
-        </section>
-
-        <footer className="border-t border-white/10">
-          <div className="max-w-6xl mx-auto flex flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-white/40 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <LogoMark className="w-[18px] h-[18px]" />© {new Date().getFullYear()} Mentamind
+            <div className="mm-rise" style={{ animationDelay: "0.15s" }}>
+              <Headline
+                as="h1"
+                line1="Support your team"
+                line2="before burnout"
+                className="mt-7 text-[44px] text-white sm:text-6xl lg:text-[76px]"
+              />
             </div>
-            <div className="flex gap-4">
-              <Link href="/login" className="hover:text-white/70">
-                Log in
-              </Link>
-              <Link href="/register" className="hover:text-white/70">
-                Get started
-              </Link>
+            <p className="mm-rise mx-auto mt-6 max-w-xl text-[17px] leading-[1.55] text-white/90 sm:text-lg" style={{ animationDelay: "0.28s" }}>
+              Daily check-ins, a private AI companion, guided meditation and an anonymous community for every employee. Team-level signals for HR, with no individual entry ever exposed.
+            </p>
+            <div className="mm-rise mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row" style={{ animationDelay: "0.4s" }}>
+              <PrimaryButton href="/register">Start free</PrimaryButton>
+              <GhostButton href="#how-it-works">See how it works</GhostButton>
             </div>
           </div>
-        </footer>
+          <HeroCards />
+        </div>
       </div>
+    </section>
+  );
+}
+
+function Marquee() {
+  const items = [...SECTORS, ...SECTORS];
+  return (
+    <section className="py-14 sm:py-16">
+      <p className="text-center font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">Built for teams in</p>
+      <div className="relative mt-7 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+        <div className="mm-marquee flex w-max items-center">
+          {items.map((s, i) => (
+            <span key={i} className="flex items-center font-geist text-[15px] text-white/70">
+              <span className="px-6">{s}</span>
+              <span className="h-1 w-1 rounded-full bg-white/25" />
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Facts() {
+  return (
+    <section className="mx-auto max-w-6xl px-5 pb-10 sm:px-6">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {FACTS.map((f) => (
+          <div
+            key={f.label}
+            className={`rounded-2xl p-5 ${
+              f.accent ? "bg-[#19b2d2] text-[#03202f]" : "border border-white/10 bg-white/[0.03] text-white"
+            }`}
+          >
+            <div className={`font-mono text-[11px] uppercase tracking-[0.14em] ${f.accent ? "text-[#03202f]/70" : "text-white/45"}`}>{f.label}</div>
+            <div className="mt-6 font-geist text-[44px] leading-none tracking-[-0.03em]">{f.value}</div>
+            <p className={`mt-3 text-[13px] leading-snug ${f.accent ? "text-[#03202f]/80" : "text-white/55"}`}>{f.note}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Modules() {
+  return (
+    <section id="features" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20 sm:px-6 sm:py-28">
+      <div className="max-w-2xl">
+        <Eyebrow>What&apos;s inside</Eyebrow>
+        <Headline line1="Six things an employee" line2="actually opens" className="mt-6 text-[36px] text-white sm:text-5xl lg:text-[56px]" />
+        <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-white/60">
+          Not a benefits portal nobody logs into. Small daily tools that fit between meetings, and that people keep using after the first week.
+        </p>
+      </div>
+      <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {MODULES.map((m) => (
+          <article key={m.category} className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#19b2d2]">{m.category}</div>
+            <h3 className="mt-5 font-geist text-[21px] font-medium leading-snug tracking-tight text-white">{m.title}</h3>
+            <p className="mt-3 flex-1 text-[14px] leading-relaxed text-white/55">{m.body}</p>
+            <div className="mt-6 flex flex-wrap gap-1.5">
+              {m.tags.map((t) => (
+                <span key={t} className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/55">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <section id="how-it-works" className="scroll-mt-24 bg-[#0a0d13] py-20 sm:py-28">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-6 lg:grid-cols-[5fr_7fr] lg:gap-20">
+        <div>
+          <Eyebrow>How it works</Eyebrow>
+          <Headline line1="From invite to insight" line2="in four weeks" className="mt-6 text-[36px] text-white sm:text-5xl lg:text-[56px]" />
+          <p className="mt-5 max-w-md text-[16px] leading-relaxed text-white/60">
+            Nothing to install on company devices and no integration project. Most organisations have their first team signal within a month.
+          </p>
+        </div>
+        <ol className="divide-y divide-white/10 border-y border-white/10">
+          {STEPS.map((s, i) => (
+            <li key={s.title} className="grid grid-cols-[48px_1fr] gap-4 py-7">
+              <span className="pt-1 font-mono text-[12px] text-white/35">0{i + 1}</span>
+              <div>
+                <h3 className="font-geist text-[20px] font-medium tracking-tight text-white">{s.title}</h3>
+                <p className="mt-2 max-w-md text-[14px] leading-relaxed text-white/55">{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function ForHR() {
+  return (
+    <section id="for-hr" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20 sm:px-6 sm:py-28">
+      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <Eyebrow>For HR and people teams</Eyebrow>
+          <Headline line1="Signals," line2="not surveillance" className="mt-6 text-[36px] text-white sm:text-5xl lg:text-[56px]" />
+          <p className="mt-5 max-w-md text-[16px] leading-relaxed text-white/60">
+            Employees will only be honest if they trust what happens to the answer. So the dashboard is built around what HR cannot see.
+          </p>
+          <ul className="mt-8 space-y-4">
+            {HR_POINTS.map((p) => (
+              <li key={p} className="flex gap-3 text-[15px] leading-relaxed text-white/75">
+                <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#19b2d2]" />
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-[24px] border border-white/10 bg-[#0a0d13] p-2">
+          <div className="rounded-[18px] bg-[#0e1218] p-5 ring-1 ring-white/5">
+            <div className="flex items-center justify-between">
+              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/45">Weekly digest</div>
+              <div className="text-[12px] text-white/40">Week 38</div>
+            </div>
+            <div className="mt-5 space-y-2">
+              {SIGNAL_ROWS.map((row) => (
+                <div key={row.team} className="flex items-center justify-between rounded-xl bg-white/[0.04] px-4 py-3">
+                  <span className="text-[14px] text-white/85">{row.team}</span>
+                  <span className="flex items-center gap-2 text-[13px]" style={{ color: row.tone }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: row.tone }} />
+                    {row.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              {[
+                { label: "Response rate", value: "82%", width: "82%" },
+                { label: "Companion sessions", value: "54%", width: "54%" },
+              ].map((m) => (
+                <div key={m.label} className="rounded-xl bg-white/[0.04] p-4">
+                  <div className="text-[12px] text-white/45">{m.label}</div>
+                  <div className="mt-2 font-geist text-[26px] leading-none tracking-tight text-white">{m.value}</div>
+                  <div className="mt-3 h-1 w-full rounded-full bg-white/10">
+                    <div className="h-full rounded-full bg-[#19b2d2]" style={{ width: m.width }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 text-[12px] leading-relaxed text-white/35">
+              Shown only for teams with enough members to keep every answer anonymous.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ClosingCta() {
+  return (
+    <section className="px-3 pb-3 sm:px-5 sm:pb-5">
+      <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px]">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,#e3f7fb_0%,#67cde3_30%,#0f98b8_58%,#075a78_82%,#03202f_100%)]" />
+        <div className="relative px-6 py-20 text-center sm:py-28">
+          <Headline line1="Support your team," line2="before burnout." className="mx-auto text-[40px] text-white sm:text-6xl lg:text-[72px]" />
+          <p className="mx-auto mt-6 max-w-md text-[16px] leading-relaxed text-white/85">
+            Free for small teams. Set up in an afternoon, first signal within a month.
+          </p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <PrimaryButton href="/register">Create your organisation</PrimaryButton>
+            <GhostButton href="mailto:noreply.mentamind@gmail.com">Talk to us</GhostButton>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <Logo size={24} />
+      <nav className="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-white/50">
+        {NAV_LINKS.map((l) => (
+          <a key={l.href} href={l.href} className="hover:text-white">
+            {l.label}
+          </a>
+        ))}
+        <Link href="/login" className="hover:text-white">Log in</Link>
+        <Link href="/register" className="hover:text-white">Create account</Link>
+      </nav>
+      <p className="text-[13px] text-white/35">© {new Date().getFullYear()} Mentamind</p>
+    </footer>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+export function LandingPage() {
+  return (
+    <div className="dark min-h-screen overflow-x-hidden bg-[#06080c] font-geist text-[#f2f5fa] antialiased">
+      <Nav />
+      <main>
+        <Hero />
+        <Marquee />
+        <Facts />
+        <Modules />
+        <HowItWorks />
+        <ForHR />
+        <ClosingCta />
+      </main>
+      <Footer />
     </div>
   );
 }

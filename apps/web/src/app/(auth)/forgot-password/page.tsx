@@ -74,13 +74,13 @@ export default function ForgotPasswordPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-semibold text-text-primary">Check your inbox</h1>
+          <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">Check your inbox</h1>
         </div>
         <p className="text-sm text-text-secondary text-center mb-6">
           If an account with that email exists, we&apos;ve sent a password reset link. It expires in 30 minutes.
         </p>
-        <p className="text-center text-sm text-text-secondary">
-          <Link href="/login" className="text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
+        <p className="text-center text-[13px] text-white/50">
+          <Link href="/login" className="text-[#19b2d2] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
             Back to sign in
           </Link>
         </p>
@@ -90,8 +90,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold text-text-primary">Reset your password</h1>
-      <p className="mt-1 text-sm text-text-secondary mb-6">
+      <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">Reset your password</h1>
+      <p className="mt-2 mb-7 text-[14px] leading-relaxed text-white/55">
         Enter your email and we&apos;ll send you a reset link.
       </p>
 
@@ -112,13 +112,13 @@ export default function ForgotPasswordPage() {
             placeholder="you@example.com"
           />
         </FormField>
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading} disabled={isLoading}>
+        <Button type="submit" className="mt-7 h-12 w-full rounded-full text-[15px]" isLoading={isLoading} disabled={isLoading}>
           Send reset link
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-text-secondary">
-        <Link href="/login" className="text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
+      <p className="mt-4 text-center text-[13px] text-white/50">
+        <Link href="/login" className="text-[#19b2d2] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm">
           Back to sign in
         </Link>
       </p>

@@ -98,10 +98,10 @@ export default function RegisterPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold text-text-primary">
+      <h1 className="text-[28px] font-medium leading-tight tracking-tight text-white">
         Create your workspace
       </h1>
-      <p className="mt-1 text-sm text-text-secondary mb-6">
+      <p className="mt-2 mb-7 text-[14px] leading-relaxed text-white/55">
         Set up your organization and become its admin. You can invite colleagues after signing up.
       </p>
 
@@ -215,7 +215,7 @@ export default function RegisterPage() {
 
         <Button
           type="submit"
-          className="w-full mt-6"
+          className="mt-7 h-12 w-full rounded-full text-[15px]"
           isLoading={isLoading}
           disabled={isLoading}
         >
@@ -223,16 +223,16 @@ export default function RegisterPage() {
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-text-secondary">
+      <p className="mt-4 text-center text-[13px] text-white/50">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm"
+          className="text-[#19b2d2] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-sm"
         >
           Sign in
         </Link>
       </p>
-      <p className="mt-2 text-center text-sm text-text-secondary">
+      <p className="mt-2 text-center text-[13px] text-white/50">
         Joining via an invite?{" "}
         <span className="text-text-secondary">Check your email for a link.</span>
       </p>

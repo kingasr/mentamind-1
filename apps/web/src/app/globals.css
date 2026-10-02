@@ -216,3 +216,48 @@
   -webkit-font-smoothing: antialiased;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+/* Landing page sector marquee */
+@keyframes mm-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.mm-marquee {
+  animation: mm-marquee 36s linear infinite;
+}
+
+/* Landing page hero entrance (one orchestrated reveal) */
+@keyframes mm-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mm-rise {
+  animation: mm-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (min-width: 640px) {
+  /* Tilted hero cards keep their rotation after the entrance finishes. */
+  .mm-rise[style*="--tilt"] {
+    animation-name: mm-rise-card;
+  }
+  @keyframes mm-rise-card {
+    from { opacity: 0; transform: rotate(var(--tilt)) translateY(calc(var(--lift) + 36px)); }
+    to { opacity: 1; transform: rotate(var(--tilt)) translateY(var(--lift)); }
+  }
+}
+
+/* Auth pages: rounder, taller fields to match the landing page */
+.mm-auth input:not([type="checkbox"]):not([type="radio"]),
+.mm-auth select {
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+.mm-auth label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.mm-auth button[type="submit"] {
+  border-radius: 9999px;
+}
